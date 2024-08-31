@@ -1,0 +1,608 @@
+	<!DOCTYPE html>
+	<html>
+	<head>
+	<link href="videojs.min.css?v=2566666" rel="stylesheet">
+	<script type="text/javascript" src="https://vjs.zencdn.net/7.21.1/video.min.js"></script>
+	  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/videojs-persistvolume@0.2.0/videojs.persistvolume.min.js"></script>
+<script src="https://player.live-video.net/1.21.0/amazon-ivs-videojs-tech.min.js"></script>
+	  <script type="text/javascript" src="amazon-ivs-quality-plugin.min.js?v=223"></script>
+	  	  <link rel="stylesheet" type="text/css" href="playerr.css?v=2vvv334455">
+	</head>
+	<body style="background-color:black;margin:0;padding:0;overflow:hidden;";>
+		  <div id="videoContainer" class="video-container" style="width:100vw;height:100vh;">
+	 </body>
+	 <script>
+	  let index = 0;
+const Button = videojs.getComponent('Button');
+const MyButton = videojs.extend(Button, {
+  constructor: function(player, options) {
+    Button.call(this, player, options);
+    this.addClass('my-close-button'); // Add a custom CSS class for styling
+    this.on('click', this.handleClick); // Handle click event
+  },
+  buildCSSClass: function () {
+    return 'vjs-icon-close'; // Use a Font Awesome icon class
+  },
+  handleClick: function() {
+
+  }
+});
+
+// Register the custom button component
+videojs.registerComponent('MyButton', MyButton);
+
+//////
+function playSegments(segmentUrls) {
+const validSegmentUrls = segmentUrls.map(url => url.replace('#EXT-X-PREFETCH:', ''));
+
+  if (validSegmentUrls.length === 0) {
+    console.error('No valid segment URLs found.');
+    return;
+  }
+
+const m3u = generateM3U8Playlist(validSegmentUrls);
+createClipPlayerWithThrottle(m3u);
+}
+// Fetch and return the segment URLs
+function getSegmentUrls(manifestUrl) {
+    return fetch(manifestUrl)
+        .then(response => response.text())
+        .then(data => {
+            const lines = data.split('\n');
+            const segmentUrls = [];
+
+            for (const line of lines) {
+                if (line.trim().endsWith('.ts')) {
+                    segmentUrls.push(line.trim());
+                }
+            }
+
+            return segmentUrls;
+        })
+        .catch(error => {
+            console.error('Error fetching or parsing segment URLs:', error);
+            return [];
+        });
+}
+function generateM3U8Playlist(segmentUrls) {
+  const playlistContent = `#EXTM3U\n#EXT-X-MEDIA-SEQUENCE:0\n${segmentUrls.map(url => `#EXTINF:2.000,\n${url}`).join('\n')}\n#EXT-X-ENDLIST`;
+  const blob = new Blob([playlistContent], { type: 'application/vnd.apple.mpegurl' });
+  const url = URL.createObjectURL(blob);
+  return url;
+}
+const validSegments =[];
+//////
+window.addEventListener('message', function(event) {
+  if (event.data === 'pauseVideo') {
+    const video = document.querySelector('video');
+    if (video) {
+      video.pause();
+    }
+  }
+});
+	registerIVSTech(videojs);
+	  registerIVSQualityPlugin(videojs);
+    function createVideoPlayer(videoUrl,username,streamtitle,created_at) {
+      const playerId = 'player-' + Date.now();
+       index++;
+      const videoElement = document.createElement('video');
+      videoElement.id = playerId;
+      videoElement.className = 'video-js vjs-default-skin';
+      videoElement.setAttribute('controls', '');
+      videoElement.setAttribute('preload', 'auto');
+      videoElement.setAttribute('playsinline', '');
+	  videoElement.setAttribute('autoplay', '');
+	  videoElement.setAttribute('data-index', index);
+	  videoElement.style.width="100%";
+	  videoElement.style.height="100%";
+      const videoContainer = document.getElementById('videoContainer');
+	   const wrapper = document.createElement('div');
+	    wrapper.style.position = "relative"; 
+		wrapper.className = "videowrapper";
+		wrapper.id = "videowrapper";
+	//	wrapper.setAttribute('draggable', 'true');
+		 wrapper.style.width="100%";
+		 wrapper.style.height="100%";
+	   const streamcontainer = document.createElement('div');
+      streamcontainer.className = 'stream-container';
+	  streamcontainer.id = 'streamcontainer';
+	  streamcontainer.style.width="100%";
+	   streamcontainer.style.height="100%";
+	  streamcontainer.appendChild(videoElement);
+	  var blackcontainer = document.createElement("div");
+blackcontainer.style.background= 'linear-gradient(360deg, rgba(16, 16, 16, 0.1) 0%, rgba(16, 16, 16, 1) 100%)';
+blackcontainer.style.position = "absolute";
+blackcontainer.style.top = "0%";
+blackcontainer.style.left = "0%";
+blackcontainer.style.width = "100%";
+blackcontainer.style.height = "75px";
+	  var span1 = document.createElement("span");
+    span1.innerText = username;
+    span1.style.position = "absolute"; // Position absolute for positioning inside the wrapper
+    span1.style.top = "0%";
+	span1.style.left = "40px";
+    span1.style.color = "white";
+	span1.style.fontFamily = "Roboto, sans-serif";
+	span1.style.fontWeight = 'bold';
+    span1.style.padding = "5px";
+	span1.style.fontSize = "21px";
+	span1.style.textDecoration = "underline";
+	span1.style.cursor = "pointer";
+	span1.title="Refresh The Stream";
+var img = document.createElement("img");
+img.src = "./refresh.png"; // Replace with the actual image URL
+img.alt = "Refresh Stream"; // Add alt text for accessibility
+img.style.verticalAlign = "middle"; 
+img.style.width="21px";
+img.style.height="21px";
+span1.appendChild(img);
+
+
+	//blackcontainer.appendChild(span1);
+	//blackcontainer.appendChild(span);
+	wrapper.appendChild(streamcontainer);
+
+      videoContainer.appendChild(wrapper);
+    const width = "100%";
+  const height = "100%";
+      const player = videojs(playerId, {
+        techOrder: ['AmazonIVS' ,'html5'],
+          html5: {
+            hls: {
+                overrideNative: true, 
+            }
+        },
+		plugins: {
+    persistvolume: {
+	    namespace: 'So-Viral-So-Hot'
+    }
+},
+		  controlBar: {
+        volumePanel: {inline: false}
+    },
+		width: width, 
+        height: height, 
+      }).ready(function() {
+        const videoPlayer = this;
+        videoPlayer.src({
+          src: videoUrl,
+          type: 'application/x-mpegURL'
+        });
+	  const videoContainer = document.getElementById('videoContainer');
+  	  const createdAtTimestamp = new Date(created_at);
+
+
+var currentTimestamp = null;
+var timeDifferenceMs = null; // Use getTime() to get the timestamp in milliseconds
+var hours = null;
+var minutes = null;
+var seconds = null;
+var remainingTimeDisplay = videoPlayer.controlBar.getChild('RemainingTimeDisplay');
+let remainingTime=null;
+let intervalId; // Variable to store the interval ID
+
+  intervalId = setInterval(() => {
+	  if (remainingTimeDisplay) {
+    currentTimestamp = Date.now();
+    timeDifferenceMs = currentTimestamp - createdAtTimestamp.getTime();
+    hours = Math.floor(timeDifferenceMs / (1000 * 60 * 60));
+    minutes = Math.floor((timeDifferenceMs % (1000 * 60 * 60)) / (1000 * 60));
+
+    seconds = Math.floor((timeDifferenceMs % (1000 * 60)) / 1000);
+    seconds++;
+    if (seconds === 60) {
+      seconds = 0;
+      minutes++;
+      if (minutes === 60) {
+        minutes = 0;
+        hours++;
+      }
+    }
+    remainingTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    remainingTimeDisplay.el().textContent = remainingTime;
+  }
+  if (!remainingTimeDisplay) {
+  clearInterval(intervalId);
+}
+  }, 1000);
+	  videoPlayer.enableIVSQualityPlugin();
+        videoPlayer.play();                        
+	   span1.onclick = function() {
+		   
+(async () => {
+  try {
+    const response = await fetch(`https://kick.com/api/v2/channels/${username}/livestream`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+	const nextSibling = wrapper.nextSibling;
+	if(data && data.data && data.data.session_title)
+		{						 
+	   const newsrc=`https://api.codetabs.com/v1/proxy/?quest=${data.data.playback_url}`;
+		   const newtitle=data.data.session_title;
+		   const newcreatedat=data.data.created_at;
+createVideoPlayer(newsrc,username,newtitle,newcreatedat);
+var children = videoContainer.children;
+   if (children.length > 0) {
+                var lastElement = children[children.length - 1];
+            } 
+    videoContainer.insertBefore(lastElement, nextSibling);
+	 clearInterval(intervalId);
+       videoPlayer.dispose();
+        videoContainer.removeChild(wrapper);
+		
+		} 
+		else{
+	const errorMessage = document.createElement('p');
+      errorMessage.textContent = 'Channel is Currently Offline';
+      errorMessage.style.color = 'red';
+      errorMessage.style.textAlign = 'center';
+	  errorMessage.style.fontWeight = 'bold';
+	  errorMessage.style.backgroundColor='black';
+      errorMessage.style.fontSize = '20px';
+  errorMessage.style.top = "40%";
+   errorMessage.style.left = "15%";
+  errorMessage.style.position="absolute";
+      errorMessage.style.fontFamily = 'Arial, sans-serif';	
+
+      wrapper.appendChild(errorMessage);
+	   setTimeout(function() {
+        wrapper.removeChild(errorMessage);
+      }, 2200);
+			 }
+  } catch (error) {
+    console.error(`Error fetching data for ${username}:`, error);
+    return null;
+  }
+})();
+    
+    };
+		videoPlayer.handleTechClick_ = function() {};
+   const originalDate = new Date();
+  /* const closeButton = document.createElement('button');
+      closeButton.className = 'close-button';
+      closeButton.innerText = 'X';
+	  closeButton.title = 'Close The Stream';
+	  closeButton.style.color = 'white';
+	  closeButton.style.fontSize = '30px'; 
+      closeButton.addEventListener('click', () => {
+		  clearInterval(intervalId);
+       videoPlayer.dispose();
+	   let chatid=username+"chat";
+	   document.getElementById(chatid).remove();
+        videoContainer.removeChild(wrapper);
+		});
+		blackcontainer.appendChild(closeButton);*/
+
+//videoPlayer.el().appendChild(blackcontainer);
+
+
+
+const imageUrl = './clip2.png';
+const imageUrl2 = './cliphover.png';
+	
+let alertShown = false;
+function handleButtonClick() {
+  
+	}
+
+          document.addEventListener('error', function(event) {
+        console.error('Document caught error:', event);
+		wrapper?.remove();
+		videoPlayer?.dispose();
+		clearInterval(intervalId);
+		createVideoPlayer(videoUrl,username,streamtitle,created_at);
+      
+    }, true);
+    
+	  
+          videoPlayer.on('error', function() {
+      // Show error message
+	   videoPlayer.dispose(); // Dispose of the Video.js player instance
+	  videoContainer.removeChild(wrapper);
+      const errorMessage = document.createElement('p');
+      errorMessage.textContent = 'Channel is Offline';
+      errorMessage.style.color = 'red';
+      errorMessage.style.textAlign = 'center';
+	  errorMessage.style.fontWeight = 'bold';
+      errorMessage.style.fontSize = '30px';
+      errorMessage.style.fontFamily = 'Arial, sans-serif';	
+      videoContainer.appendChild(errorMessage);
+	       // Remove the error message after 1 second
+ setTimeout(function() {
+        videoContainer.removeChild(errorMessage);
+      }, 1000);
+    });
+      });
+      return player;
+    }
+
+	/////
+       function createClipPlayer(videoUrl) {
+      // Generate a unique ID for each player
+      const playerId = 'player-' + Date.now();
+	  const sliderId = Date.now();
+       index++;
+      const videoElement = document.createElement('video');
+      videoElement.id = playerId;
+      videoElement.className = 'video-js vjs-default-skin vjs-event-skin';
+      videoElement.setAttribute('controls', '');
+      videoElement.setAttribute('preload', 'auto');
+      videoElement.setAttribute('playsinline', '');
+	  videoElement.setAttribute('autoplay', 'true');
+	  videoElement.setAttribute('data-index', index);
+      const videoContainer = document.getElementById('videoContainer');
+	   const wrapper = document.createElement('div');
+	    wrapper.style.position = "relative"; 
+		wrapper.className = "clipwrapper";
+	   const clipcontainer = document.createElement('div');
+      clipcontainer.className = 'clip-container';
+	  clipcontainer.id = 'clipcontainer';
+	  clipcontainer.appendChild(videoElement);
+	   const sliderdiv = document.createElement('div');
+      sliderdiv.className = 'clip-slider';
+	   sliderdiv.id = sliderId;
+	     const widthSlider = document.getElementById('widthSlider');
+		 if (widthSlider.value<337)
+		 {
+			 sliderdiv.style.width = "150px";
+			 }
+			 else{
+    sliderdiv.style.width = "250px";
+	}
+	 sliderdiv.style.position = 'absolute'; // Position absolute for positioning inside the wrapper
+    sliderdiv.style.top = '65%';
+    sliderdiv.style.right = '15%';
+	sliderdiv.style.zIndex = '100';
+	 var span = document.createElement("span");
+    span.innerText = "Cut the clip as needed, then click Download again. Each step on this slider represents 10% of the entire clip";
+    span.style.position = "absolute"; // Position absolute for positioning inside the wrapper
+    span.style.top = "30%";
+    span.style.right = '1%';
+    span.style.backgroundColor = "#0A0E0F";
+    span.style.textShadow = '1px 1px 2px rgba(0, 0, 0, 0.5), -1px -1px 2px rgba(0, 0, 0, 0.5)';	// Set the background color to black
+    span.style.color = "white";
+	span.style.fontWeight = 'bold';
+    span.style.padding = "5px";
+	span.style.visibility = "hidden";
+		 if (widthSlider.value<337)
+		 {
+			 span.style.fontSize = "12px";
+			 }
+	   wrapper.appendChild(clipcontainer);
+	   wrapper.appendChild(span);
+	   wrapper.appendChild(sliderdiv);
+      videoContainer.appendChild(wrapper);
+    const width = "100%";
+  const height = "100%";
+      const player = videojs(playerId, {
+        techOrder: ['html5'],
+		plugins: {
+    persistvolume: {
+	    namespace: 'So-Viral-So-Hot'
+    }
+},
+		  controlBar: {
+        volumePanel: {inline: false},
+ children: ['playToggle', 'volumePanel','fullscreenToggle', 'currentTimeDisplay', 'timeDivider', 'durationDisplay', 'progressControl'],
+    },
+		width: width, 
+        height: height, 
+		 liveui: false, 
+      }).ready(function() {
+        const videoPlayer = this;
+        videoPlayer.src({
+          src: videoUrl,
+          type: 'application/x-mpegURL'
+        });
+		
+		const MyButton2 = videojs.extend(Button, {
+  constructor: function(player, options) {
+    Button.call(this, player, options);
+    this.controlText(options && options.controlText || 'My Button 2');
+    this.addClass('my-download-button');
+	this.isclicked = false;
+     this.downloadExecuted = false;
+	 this.downloadExecuted2 = false;
+  this.on('click', () => {
+	  if(!this.isclicked){
+		  this.isclicked = true;
+this.downloadu();
+    setTimeout(() => {
+      this.isclicked = false;
+    }, 1000);
+}
+  });
+    this.on('touchstart', () => {
+this.downloadu();
+  });
+
+  },
+  buildCSSClass: function() {
+    return 'vjs-icon-clip';
+  },
+     downloadu: function () {
+	if (!this.downloadExecuted) {
+	   span.style.visibility = "visible";
+    	  		const slider = document.getElementById(sliderId);
+noUiSlider.create(slider, {
+    start: [0, 10], 
+    connect: true, 
+    step: 1,
+    range: {
+        'min': 0,
+        'max': 10
+    }
+});
+      this.downloadExecuted = true;
+    }
+	else {
+		 if (!this.downloadExecuted2) {
+		 alert("Your clip is being generated. Please give it a moment before it appears in your download folder.\nPlease note that the clip will be in .ts format.\nYou can play it through VLC media player or upload it to Youtube or Streamable.\nIt's better to use a converter tool or a video editor to convert it into an MP4 file to avoid any playback issues.");
+const slider = document.getElementById(sliderId);
+ fetch(videoUrl)
+                .then(response => response.text())
+                .then(playlist => {
+                    const lines = playlist.split('\n');
+                    const tsUrls = lines.filter(line => line.trim().startsWith('https'));
+    const selectedStart = parseInt(slider.noUiSlider.get()[0]);
+    const selectedEnd = parseInt(slider.noUiSlider.get()[1]);
+
+    // Calculate the start and end indices based on the selected beginning and end points
+    const numParts = 10; // Number of parts to split into
+    const partSize = Math.ceil(tsUrls.length / numParts);
+    const startIndex = selectedStart * partSize;
+    const endIndex = Math.min((selectedEnd + 1) * partSize, tsUrls.length);
+
+    // Get the URLs for the selected range
+     const selectedUrls  = tsUrls.slice(startIndex, endIndex);
+                    function downloadCombinedFile(combinedData) {
+                        const blob = new Blob([combinedData], { type: 'video/mp2t' });
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.style.display = 'none';
+                        a.href = url;
+                        a.download = 'clip'+ sliderId+'.ts';
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+						combinedData = new Uint8Array(0);
+                    }
+
+                    function fetchAndCombine(index, combinedData) {
+                        if (index >= selectedUrls.length) {
+                            // All .ts files have been combined
+                            downloadCombinedFile(combinedData);
+                            return;
+                        }
+
+                        fetch(selectedUrls[index])
+                            .then(response => response.arrayBuffer())
+                            .then(tsData => {
+                                const newData = new Uint8Array(combinedData.length + tsData.byteLength);
+                                newData.set(combinedData, 0);
+                                newData.set(new Uint8Array(tsData), combinedData.length);
+                                fetchAndCombine(index + 1, newData);
+                            })
+                            .catch(error => {
+                                console.error('Error fetching .ts file:', error);
+                            });
+                    }
+
+                    fetchAndCombine(0, new Uint8Array(0));
+                })
+                .catch(error => {
+                    console.error('Error fetching playlist:', error);
+                });
+				this.downloadExecuted2 = true;
+				span.style.visibility = "hidden";
+				slider.style.visibility = "hidden";
+				}
+				}}
+});
+// Register the custom button component
+videojs.registerComponent('MyButton2', MyButton2);
+		 const downloadbutton = new MyButton2(videoPlayer, {
+      controlText: 'Download clip'
+    });
+		videoPlayer.controlBar.addChild(downloadbutton, {componentClass: 'my-download-button'}, 10);
+	  const videoContainer = document.getElementById('videoContainer');
+        videoPlayer.play();
+		videoPlayer.on('error', function() {
+      // Show error message
+	  videoContainer.removeChild(wrapper);
+	   videoPlayer.dispose(); // Dispose of the Video.js player instance
+      const errorMessage = document.createElement('p');
+      errorMessage.textContent = 'Please try again';
+      errorMessage.style.color = 'grey';
+      errorMessage.style.textAlign = 'center';
+	  errorMessage.style.fontWeight = 'bold';
+      errorMessage.style.fontSize = '30px';
+      errorMessage.style.fontFamily = 'Arial, sans-serif';	
+      videoContainer.appendChild(errorMessage);
+	       // Remove the error message after 1 second
+ setTimeout(function() {
+        videoContainer.removeChild(errorMessage);
+               
+        videoElement.style.display = 'none'; // Hide the video element
+      }, 1000);
+    });
+	 const closeButton = new MyButton(videoPlayer, {
+      controlText: 'Close'
+    });
+    videoPlayer.controlBar.addChild(closeButton, { componentClass: 'my-close-button' }, 2);
+	closeButton.on('click', function() {
+      videoPlayer.dispose();
+	  videoContainer.removeChild(wrapper);
+    });
+		closeButton.on('touchstart', function() {
+      videoPlayer.dispose();
+	  videoContainer.removeChild(wrapper);
+    });
+      });
+      return player;
+    }
+
+let clipPlayerPending = false;
+
+function createClipPlayerWithThrottle(videoUrl) {
+    if (clipPlayerPending) {
+        return;
+    }
+    clipPlayerPending = true;
+    setTimeout(() => {
+        clipPlayerPending = false;
+    }, 4000); 
+
+    createClipPlayer(videoUrl);
+}	
+var urlString = window.location.href.replace(/^file:\/\/\//, '');
+
+// Split the URL at the '#' character to separate the path from the query string
+var parts = urlString.split('#');
+
+// Get the query string part
+var queryString = parts[1];
+
+// Parse the query string into URLSearchParams object
+var searchParams = new URLSearchParams(queryString);
+
+// Extract the values of src, username, title, and created_at
+var src1 = searchParams.get('src');
+var username = searchParams.get('username');
+var title = searchParams.get('title');
+var created_at = searchParams.get('created_at');
+//createVideoPlayer(src1, username, title, created_at);
+fetch(src1)
+  .then(response => response.text()) // Fetch the URL and get the response as text
+  .then(data => {
+    createVideoPlayer(data, username, title, created_at);
+
+
+    /*
+    let base64EncodedM3U8 = data.contents.split(',')[1];
+    let binaryString = atob(base64EncodedM3U8);
+    let uint8Array = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      uint8Array[i] = binaryString.charCodeAt(i);
+    }
+    let text = new TextDecoder().decode(uint8Array);
+    let blob = new Blob([uint8Array], { type: 'application/vnd.apple.mpegurl' });
+    let reader = new FileReader();
+    reader.onload = function(event) {
+      let url = event.target.result;
+    };
+    reader.readAsText(blob);
+    */
+  })
+  .catch(error => {
+    console.error('Error fetching content:', error);
+  });
+
+
+
+
+
+	 </script>
+	</html>
