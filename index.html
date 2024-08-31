@@ -1,11 +1,87 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-<a href=""><img style="opacity:0;width:0.1px;height:0.1px"src="https://www.flagcounter.me/eZJ" alt="logo"></a>
-<a href=""><img src="https://multistream.rf.gd/src/?logo" alt="logo"></a>
+	<!DOCTYPE html>
+	<html>
+	<head>
+	<title>Multistream watcher for Kick.com</title>
+	<link rel="icon" href="./favicon.ico" type="image/ico">
+	<link href="videojs.min.css?v=25555665" rel="stylesheet">
+	<script type="text/javascript" src="https://vjs.zencdn.net/7.21.1/video.min.js"></script>
+		  <link rel="stylesheet" href="nouislider.min.css">
+	  <script type="text/javascript" src="nouislider.min.js"></script>
+	  	<link href="videojs.min.css" rel="stylesheet">
+	<script type="text/javascript" src="https://vjs.zencdn.net/7.21.1/video.min.js"></script>
+	  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/videojs-persistvolume@0.2.0/videojs.persistvolume.min.js"></script>
+	  <link rel="stylesheet" type="text/css" href="page_st.css?v=2044566">
+	</head>
+	<body>
+	<div class="container1">
+		  <button style="visibility:hidden" onclick="toggleSidebar()" id="display-sidebar" class="display-sidebar"></button>
+	  <div class="button-container" id="button-container">
+	  		<button id="loadTwitchStreamButton">Load Twitch Stream <img src="tw.png" width="12" height="12"></button>
+			<button id="Focusmode"class="Focusmode">Focus Mode <img src="./focus.png" alt="Focus Mode"width="10" height="10"/></button>
+			<button id="chatenable">Disable Chat</button>
+		    <button onclick="hideAllPlayers()">Close All Streams</button> 
+		    <button onclick="hideAllChats()">Close All Chats</button> 
+			<button id="resizeButton">Restore Stream Size</button>
+			<button id="selectButton">Select Stream Size</button>
+	<label for="widthSlider"></label>
+	<input type="range" id="widthSlider" step="1" min="235" max="1000" value="378">
+	<span id="widthValue"></span>
+	<div class="slider-container" style="display: none;">
+	  <label for="heightSlider">Height:</label>
+	  <input type="range" id="heightSlider" min="56" max="600" step="10" value="216">
+	  <span id="heightValue"></span>
+	</div>
+	</div>
+	</div>
+	<div id="bigwrapper">
+	 <div id="sidebar">
+	  <h2 style="color:white;">Live <img src="./live.png"  width="12" height="12"></h2>
+	  <button onclick="toggleSidebar()" id="hide-sidebar" title="Hide the sidebar" class="hide-sidebar"></button>
+	  <ul id="onlineUsersList">  </ul>
+	  				  <div id="usernameManagement"style="margin-top:10px;text-align: center;align:center;margin-bottom:5px;">
+  <span style="color:#36454F;font-weight:bold;font-size: 10px; cursor:pointer;">Manage Favorite Channels</span>
+  <div id="usernameButtons">
+    <button id="addUsernameButton"style="font-size: 9px;display: block; margin: 0 auto;margin-bottom:3px;color: #33ff33;border: 1px solid white;">Add Channel</button>
+    <button id="removeUsernameButton"style="font-size: 9px;color: #33ff33; display: block; margin: 0 auto;margin-bottom:3px;border: 1px solid white;">Remove Channel</button>
+	<button id="showfavorites"style="margin-left:10px;font-size: 9px;display: block;margin-bottom:3px;color: #33ff33;border: 1px solid white;">Display Favorite Channels</button>
+  </div>
+	</div>
+	  <div class="form-container">
+		<form id="watch-form" onsubmit="handleFormSubmit(); return false;">
+</div>
+		  <div id="WatchAnotherChannel"><span style="margin-left:25px;color:#36454F;font-weight:bold;font-size: 10px;text-align: center; cursor:pointer;">Watch Another Channel</span>  </div>
+		  <div id="WatchAnotherChannel2"style="margin-top:10px;text-align: center;">
+		  <input type="text" id="username" placeholder="Enter channel to watch">
+		  <button class="watch-channel" type="submit">Watch Channel</button>
+		  </div>
+		  <div id="showtopbar" style="margin-top: 5px;"><span style="margin-left:37px;color:#36454F;font-weight:bold;font-size: 10px;text-align: center; cursor:pointer;">Show/Hide Topbar</span>  </div>
+		</form>
 
-</body>
-</html>
+	</div>
+<div id="2ndwrapper">
+	  <div id="videoContainer" class="video-container" style="display: flex;flex-wrap: wrap;overflow-x: hidden;overflow-y: hidden;">
+	<div class="logo-container">
+	  <img src="./kick.jpg" alt="Kick Multistream" class="logo">
+	  <p style="color:grey;font-size:16px;text-align: left;font-weight: bold;text-decoration:underline;">Alternative Site for This Project: <a href="https://kickmultistream.github.io/" target="_blank">https://kickmultistream.github.io/</a></p>
+	  <p style="color:grey;font-size:16px;text-align: left;font-weight: bold;text-decoration:underline;">-Changelog:</p>
+	  	  	  	  <p style="color:grey;font-size:12px;text-align: left;font-weight: bold;">23/08/2024: -Multiple Bug fixes and enhancements.</p>
+	  	  	  <p style="color:grey;font-size:12px;text-align: left;font-weight: bold;">14/06/2024: -Bug fixes.</p>
+	  	  <p style="color:grey;font-size:12px;text-align: left;font-weight: bold;">17/05/2024: -Kick chats are now scrollable.</p>
+       <p style="color:grey;font-size:12px;text-align: left;font-weight: bold;">25/03/2024: -Some improvements: More efficient way of clipping, cleaner UI.</p>
+      	  <p style="color:grey;font-size:12px;text-align: left;font-weight: bold;">18/01/2024: -Fixed Kick Chat.</p>
+	  <p style="color:grey;font-size:12px;text-align: left;font-weight: bold;">23/09/2023: -Major UI update.</p>
+	  <p style="color:grey;font-size:12px;text-align: left;font-weight: bold;">20/09/2023: -A refresh button for each stream, stream uptime and some UI changes.</p>
+	  <p style="color:grey;font-size:12px;text-align: left;font-weight: bold;">13/09/2023: -Cutting clips is now possible.</p>
+	  <p style="color:grey;font-size:12px;text-align: left;font-weight: bold;">09/09/2023: -Downloading clips is now possible.</p>
+<a style="display:block; opacity:0;width:0.1px;height:0.1px" href=""><img style="opacity:0;width:0.1px;height:0.1px" src="https://www.flagcounter.me/eZL/" alt=""></a>
+	</div>
+	<div id="twitch-player-container"></div></div>
+	 <div class="chat-container" id="chat-container"></div>
+	 <div class="clip-slider"id="clip-slider"></div>
+	  </div>
+	  </div> 
+<script src="https://embed.twitch.tv/embed/v1.js"></script>
+	<script type="text/javascript" src="minv7.js?v=ae913c59db7dddddddd1d6cfe0d1b76"></script>
+
+	 </body>
+	</html>
