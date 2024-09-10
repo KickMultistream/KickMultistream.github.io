@@ -9,7 +9,63 @@ body {
 	body::-webkit-scrollbar {
   width: 8px;
 }
+   #username-container {
+      position: absolute;
+	  z-index:2666;
+	  opacity:0.9;
+      padding: 20px;
+      border: 1px solid #ccc;
+      width: 1000px;
+      background-color: #f9f9f9;
+	    display: flex;
+  flex-wrap: wrap;
+  top:40px;
+  left: 20%;
+    }
 
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+    }
+#add-username-form {
+  display: flex;
+  margin-bottom: 15px;
+  position:absolute;
+}
+
+#add-username-form input {
+  flex: 1;
+  padding: 5px;
+  margin-right: 10px;
+}
+
+#add-username-form button {
+  padding: 5px 10px;
+  background-color: green;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+ .username-item {
+  flex: 0 1 30%; 
+  display: flex;
+  margin-bottom: 5px;
+  padding: 5px;
+}
+
+    .remove-btn {
+      background-color: red;
+      color: white;
+      border: none;
+      cursor: pointer;
+      padding: 2px 5px;
+    }
 body::-webkit-scrollbar-track {
   background: #333;
   border-radius: 5px;
